@@ -10,12 +10,17 @@ import UIKit
 
 class TodoListViweController: UITableViewController {
     
-    var itemArray = ["Todo1","Todo2","Todo3","Todo4"]
+    var itemArray = [ItemModel]()
     let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let items = defaults.array(forKey: "abc") as? [String]{
+        
+        let a = ItemModel()
+        a.name = "rfev"
+        a.status = false
+        itemArray.append(a)
+        if let items = defaults.array(forKey: "abc") as? [ItemModel]{
             itemArray = items
         }
        
@@ -28,33 +33,44 @@ class TodoListViweController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoListCell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = itemArray[indexPath.row].name
+        if(itemArray[indexPath.row].status == true)
+        {
+           cell.accessoryType = .checkmark
+        }
+        else
+        {
+            cell.accessoryType = .none
+        }
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(itemArray[indexPath.row])
-        if(tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark)
-        {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        
+        if(itemArray[indexPath.row].status){
+            itemArray[indexPath.row].status = false
         }
         else
         {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+          itemArray[indexPath.row].status = true
         }
+        tableView.reloadData()
+        
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
 
-    @IBAction func addTodo(_ sender: UIBarButtonItem) {
+    @IBAction func addTodo(_ sender: UIBarButtonItem)  {
         
         var buffTextFiels = UITextField()
         
         let alert = UIAlertController(title: "Add Todo", message: "", preferredStyle: .alert)
-        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-        
-            self.itemArray.append(buffTextFiels.text!)
-            self.defaults.setValue(self.itemArray, forKey: "abc")
+        var action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+            let ab = ItemModel()
+            ab.name = buffTextFiels.text!
+            ab.status = false
+            self.itemArray.append(ab)
+            self.defaults.set(NSKeyedArchiver.archivedData(withRootObject: self.itemArray, requiringSecureCoding: false), forKey: "abc")
             self.tableView.reloadData()
         }
         alert.addTextField { (alertTextField) in
