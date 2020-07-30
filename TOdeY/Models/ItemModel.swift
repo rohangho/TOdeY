@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ItemModel{
+class ItemModel: Encodable{
     
     var name: String = ""  ;
     var status: Bool = false

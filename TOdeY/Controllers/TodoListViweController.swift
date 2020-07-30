@@ -11,18 +11,20 @@ import UIKit
 class TodoListViweController: UITableViewController {
     
     var itemArray = [ItemModel]()
-    let defaults = UserDefaults.standard
-
+    let dataFile = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+   
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         
         let a = ItemModel()
         a.name = "rfev"
         a.status = false
         itemArray.append(a)
-        if let items = defaults.array(forKey: "abc") as? [ItemModel]{
-            itemArray = items
-        }
+//        if let items = defaults.array(forKey: "abc") as? [ItemModel]{
+//            itemArray = items
+//        }
        
         // Do any additional setup after loading the view.
     }
@@ -55,6 +57,7 @@ class TodoListViweController: UITableViewController {
           itemArray[indexPath.row].status = true
         }
         tableView.reloadData()
+        save()
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -70,7 +73,7 @@ class TodoListViweController: UITableViewController {
             ab.name = buffTextFiels.text!
             ab.status = false
             self.itemArray.append(ab)
-            self.defaults.set(self.itemArray, forKey: "abc")
+            self.save()
             self.tableView.reloadData()
         }
         alert.addTextField { (alertTextField) in
@@ -80,6 +83,21 @@ class TodoListViweController: UITableViewController {
         }
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
+    }
+    
+    func save()
+    {
+        let encoder = PropertyListEncoder()
+        do
+        {
+            let  datum = try encoder.encode(itemArray)
+            try datum.write(to:dataFile!)
+           
+            
+        }
+        catch{
+            print(error)
+        }
     }
 }
 
