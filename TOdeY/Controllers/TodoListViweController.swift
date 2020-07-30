@@ -70,7 +70,7 @@ class TodoListViweController: UITableViewController {
             ab.name = buffTextFiels.text!
             ab.status = false
             self.itemArray.append(ab)
-            self.defaults.set(NSKeyedArchiver.archivedData(withRootObject: self.itemArray, requiringSecureCoding: false), forKey: "abc")
+            self.defaults.set(self.itemArray, forKey: "abc")
             self.tableView.reloadData()
         }
         alert.addTextField { (alertTextField) in
