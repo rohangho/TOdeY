@@ -17,16 +17,8 @@ class TodoListViweController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadItems()
         
-        let a = ItemModel()
-        a.name = "rfev"
-        a.status = false
-        itemArray.append(a)
-//        if let items = defaults.array(forKey: "abc") as? [ItemModel]{
-//            itemArray = items
-//        }
-       
-        // Do any additional setup after loading the view.
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -99,5 +91,22 @@ class TodoListViweController: UITableViewController {
             print(error)
         }
     }
+    
+    func loadItems()
+    {
+        do{
+            let data = try Data(contentsOf: dataFile!)
+            let decoder = PropertyListDecoder()
+            do{
+                itemArray = try decoder.decode([ItemModel].self, from: data)
+            }
+           
+        }
+        catch
+        {
+            print(error)
+        }
+    }
+    
 }
 
