@@ -7,17 +7,18 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViweController: UITableViewController {
     
-    var itemArray = [ItemModel]()
-    let dataFile = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    var itemArray = [ItemSchema]()
+     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
    
  
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        loadItems()
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        //loadItems()
         
     }
     
@@ -60,8 +61,11 @@ class TodoListViweController: UITableViewController {
         var buffTextFiels = UITextField()
         
         let alert = UIAlertController(title: "Add Todo", message: "", preferredStyle: .alert)
-        var action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-            let ab = ItemModel()
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+           
+           
+           
+            let ab = ItemSchema(context: self.context)
             ab.name = buffTextFiels.text!
             ab.status = false
             self.itemArray.append(ab)
@@ -79,34 +83,30 @@ class TodoListViweController: UITableViewController {
     
     func save()
     {
-        let encoder = PropertyListEncoder()
         do
         {
-            let  datum = try encoder.encode(itemArray)
-            try datum.write(to:dataFile!)
-           
-            
+            try context.save()
         }
         catch{
             print(error)
         }
     }
     
-    func loadItems()
-    {
-        do{
-            let data = try Data(contentsOf: dataFile!)
-            let decoder = PropertyListDecoder()
-            do{
-                itemArray = try decoder.decode([ItemModel].self, from: data)
-            }
-           
-        }
-        catch
-        {
-            print(error)
-        }
-    }
+//    func loadItems()
+//    {
+//        do{
+//            let data = try Data(contentsOf: dataFile!)
+//            let decoder = PropertyListDecoder()
+//            do{
+//                itemArray = try decoder.decode([ItemSchema].self, from: data)
+//            }
+//
+//        }
+//        catch
+//        {
+//            print(error)
+//        }
+//    }
     
 }
 
