@@ -18,7 +18,7 @@ class TodoListViweController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        //loadItems()
+        loadItems()
         
     }
     
@@ -92,21 +92,16 @@ class TodoListViweController: UITableViewController {
         }
     }
     
-//    func loadItems()
-//    {
-//        do{
-//            let data = try Data(contentsOf: dataFile!)
-//            let decoder = PropertyListDecoder()
-//            do{
-//                itemArray = try decoder.decode([ItemSchema].self, from: data)
-//            }
-//
-//        }
-//        catch
-//        {
-//            print(error)
-//        }
-//    }
+    func loadItems()
+    {
+        let request: NSFetchRequest<ItemSchema> = ItemSchema.fetchRequest()
+        do{
+            itemArray = try context.fetch(request)
+        }catch{
+            print(error)
+        }
+        
+    }
     
 }
 
