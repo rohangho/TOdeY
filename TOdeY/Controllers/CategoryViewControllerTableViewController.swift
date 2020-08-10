@@ -30,6 +30,7 @@ class CategoryViewControllerTableViewController: UITableViewController {
 
     
     @IBAction func clickAddCate(_ sender: UIBarButtonItem) {
+        
     }
     
 }
