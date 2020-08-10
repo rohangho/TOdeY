@@ -11,6 +11,7 @@ import CoreData
 
 class TodoListViweController: UITableViewController {
     
+    @IBOutlet weak var searchBar: UISearchBar!
     var itemArray = [ItemSchema]()
      let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
    
@@ -18,6 +19,7 @@ class TodoListViweController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        searchBar.delegate = self
         loadItems()
         
     }
@@ -92,15 +94,31 @@ class TodoListViweController: UITableViewController {
         }
     }
     
-    func loadItems()
+    func loadItems(request: NSFetchRequest<ItemSchema> = ItemSchema.fetchRequest())
     {
-        let request: NSFetchRequest<ItemSchema> = ItemSchema.fetchRequest()
         do{
             itemArray = try context.fetch(request)
         }catch{
             print(error)
         }
+        tableView.reloadData()
         
+    }
+    
+    
+    
+    
+}
+//MARK: - Search Bar Methods
+extension TodoListViweController: UISearchBarDelegate
+{
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request :NSFetchRequest<ItemSchema> = ItemSchema.fetchRequest()
+        request.predicate = NSPredicate(format: "name CONTAINS %@", searchBar.text!)
+        
+        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        loadItems(request: request)
+       
     }
     
 }
