@@ -112,13 +112,22 @@ class TodoListViweController: UITableViewController {
 //MARK: - Search Bar Methods
 extension TodoListViweController: UISearchBarDelegate
 {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let request :NSFetchRequest<ItemSchema> = ItemSchema.fetchRequest()
-        request.predicate = NSPredicate(format: "name CONTAINS %@", searchBar.text!)
-        
-        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        loadItems(request: request)
-       
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if(searchBar.text?.count == 0)
+        {
+            loadItems()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+            
+        }
+        else{
+            let request :NSFetchRequest<ItemSchema> = ItemSchema.fetchRequest()
+            request.predicate = NSPredicate(format: "name CONTAINS %@", searchBar.text!)
+            
+            request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+            loadItems(request: request)
+        }
     }
     
 }
